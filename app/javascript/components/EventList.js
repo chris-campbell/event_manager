@@ -11,7 +11,7 @@ class EventList extends React.Component {
 
     return events.map(event => (
       <li key={event.id}>
-      <Link to={`/events/${event.id}`}>
+      <Link to={`/events/${event.id}`} className={this.props.activeId === event.id ? 'active' : ''}>
         {event.event_date}
         {' - '}
         {event.event_type}
@@ -22,8 +22,11 @@ class EventList extends React.Component {
 
   render() {
     return (
-      <section>
-        <h2>Events</h2>
+      <section className='eventList'>
+        <h2>
+          Events
+          <Link to="/events/new">New Event</Link>
+        </h2>
         <ul>{this.renderEvents()}</ul>
       </section>
     );
