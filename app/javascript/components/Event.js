@@ -13,7 +13,7 @@ const Event = ({ event, onDelete }) => {
         {' - '}
         {event.event_type}
         {' '}
-
+        <Link to={`/events/${event.id}/edit`}>Edit</Link>
         <button className="delete" type="button" onClick={() => onDelete(event.id)}>
           Delete
         </button>

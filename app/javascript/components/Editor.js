@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 import PropsRoute from './PropsRoute';
 import { Switch } from 'react-router-dom';
 import EventForm from './EventForm';
-import { success } from '../helpers/notifications';
-import { handleAjaxError } from '../helpers/helpers';
+import { success } from '../helpers/notifications'; // Calls fucntion from /helpers/notifications
+import { handleAjaxError } from '../helpers/helpers'; // Calls function from /helpers/helpers
 import Event from './Event';
 
 class Editor extends React.Component {
@@ -20,6 +20,7 @@ class Editor extends React.Component {
 
     this.addEvent = this.addEvent.bind(this);
     this.deleteEvent = this.deleteEvent.bind(this);
+    this.updateEvent = this.updateEvent.bind(this);
   }
 
   deleteEvent(eventId) {
@@ -40,6 +41,21 @@ class Editor extends React.Component {
         .catch(handleAjaxError);
     }
   }
+
+  updateEvent(updatedEvent) {
+   axios
+     .put(`/api/events/${updatedEvent.id}.json`, updatedEvent)
+     .then(() => {
+       success('Event updated');
+       const { events } = this.state;
+       const idx = events.findIndex(event => event.id === updatedEvent.id);
+       events[idx] = updatedEvent;
+       const { history } = this.props;
+       history.push(`/events/${updatedEvent.id}`);
+       this.setState({ events });
+     })
+     .catch(handleAjaxError);
+ }
 
   componentDidMount() {
     axios
@@ -78,6 +94,13 @@ class Editor extends React.Component {
             <EventList events={events} activeId={Number(eventId)} />
             <Switch>
               <PropsRoute path="/events/new" component={EventForm} onSubmit={this.addEvent} />
+              <PropsRoute
+              exact
+              path="/events/:id/edit"
+              component={EventForm}
+              event={event}
+              onSubmit={this.updateEvent}
+              />
               <PropsRoute
                 path="/events/:id"
                 component={Event}
